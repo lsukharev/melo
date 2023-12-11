@@ -1,0 +1,16 @@
+.cart {
+    padding-bottom: 2rem;
+}
+
+.location-dropdown {
+    padding-bottom: 2rem;
+}
+
+.menu-list {
+    display: flex;
+    text-align: left;
+}
+
+.menu-item {
+    padding: 1rem;
+}

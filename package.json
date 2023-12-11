@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "A simple e-commerce application",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "start": "concurrently \"pnpm run --filter @melo/api start\" \"pnpm run --filter @melo/web dev\""
+  },
   "devDependencies": {
     "@types/node": "^20.10.4",
+    "concurrently": "^8.2.2",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }

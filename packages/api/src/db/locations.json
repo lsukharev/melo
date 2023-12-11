@@ -1,0 +1,47 @@
+{
+  "locations": [
+    {
+      "id": "1",
+      "name": "West 3rd",
+      "menu": [
+        {
+          "id": "1",
+          "name": "Hot Honey Chicken",
+          "price": 1545
+        },
+        {
+          "id": "2",
+          "name": "Southwest Chicken Fajita",
+          "price": 1545
+        },
+        {
+          "id": "3",
+          "name": "Miso Glazed Salmon",
+          "price": 1696
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Encino",
+      "menu": [
+        {
+          "id": "4",
+          "name": "Chicken Pesto Parm",
+          "price": 1445
+        },
+        {
+          "id": "5",
+          "name": "Fish Taco",
+          "price": 1695
+        },
+        {
+          "id": "6",
+          "name": "Shroomami",
+          "price": 1395
+        }
+      ]
+    }
+  ]
+}
+
