@@ -9,10 +9,8 @@ type MenuItem = {
     price: number;
 };
 
-type CartMenuItem = MenuItem & { quantity: number };
-
 type Cart = {
-    menuItems: CartMenuItem[];
+    menuItems: MenuItem[];
     subtotal: number;
 };
 
@@ -50,16 +48,10 @@ async function addCartHandler(request: Request, h: ResponseToolkit) {
     }
 
     const cart: Cart = request.yar.get('cart') || { menuItems: [], subtotal: 0 };
-    const cartItemIndex = cart.menuItems.findIndex(i => i.id === item.id);
-
-    if (cartItemIndex === -1) {
-        cart.menuItems.push({...item, quantity: 1});
-    } else {
-        cart.menuItems[cartItemIndex].quantity++;
-    }
-
-    cart.subtotal = cart.menuItems.reduce((total, item) => total + (item.quantity * item.price), 0);
+    cart.menuItems.push(item);
+    cart.subtotal = cart.menuItems.reduce((total, item) => total + item.price, 0);
     request.yar.set('cart', cart);
+
     return h
         .response({
             data: cart,

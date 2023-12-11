@@ -10,15 +10,13 @@ type MenuItem = {
     price: number;
 };
 
-type CartMenuItem = MenuItem & { quantity: number };
-
 type Location = {
     id: string;
     name: string;
 };
 
 type Cart = {
-    menuItems: CartMenuItem[];
+    menuItems: MenuItem[];
     subtotal: number;
 };
 

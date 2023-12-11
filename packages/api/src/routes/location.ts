@@ -1,9 +1,7 @@
 import { Plugin, Request, ResponseToolkit } from '@hapi/hapi';
 import { locations } from '../db/locations.json';
-// import { menuItems } from '../db/menuItems.json';
 
 const locationsDb = locations as Location[];
-// const menuItemsDb = menuItems as MenuItem[];
 
 type MenuItem = {
     id: string;

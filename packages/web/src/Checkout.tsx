@@ -8,10 +8,8 @@ type MenuItem = {
     price: number;
 };
 
-type CartMenuItem = MenuItem & { quantity: number };
-
 type Cart = {
-    menuItems: CartMenuItem[];
+    menuItems: MenuItem[];
     subtotal: number;
 };
 
@@ -37,9 +35,9 @@ export default function Checkout() {
                 <ul className="cart-list">
                     {
                         cart.menuItems
-                            .map(i => (
-                                <li className="cart-item" key={i.id}>
-                                    {i.name} - ${(i.price / 100).toFixed(2)} (x{i.quantity})
+                            .map((i, index) => (
+                                <li className="cart-item" key={`${i.id}-${index}`}>
+                                    {i.name} - ${(i.price / 100).toFixed(2)}
                                 </li>
                             ))
                     }
