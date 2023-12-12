@@ -16,6 +16,7 @@ type Location = {
 };
 
 type Cart = {
+    location: Location;
     menuItems: MenuItem[];
     subtotal: number;
 };
@@ -24,10 +25,10 @@ export default function App() {
     const [location, setLocation] = useState('');
     const [locations, setLocations] = useState<Location[]>([]);
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-    const [cart, setCart] = useState<Cart>({ menuItems: [], subtotal: 0 });
+    const [cart, setCart] = useState<Cart>({ location: { id: '', name: '' }, menuItems: [], subtotal: 0 });
 
     const handleAddToCart = async (item: MenuItem) => {
-        const newCart = await fetchAddToCart(item.id);
+        const newCart = await fetchUpdateCart(location, [ ...cart.menuItems, item ]);
         setCart(newCart);
     };
 
@@ -35,32 +36,51 @@ export default function App() {
         setLocation(locationID);
         sessionStorage.setItem('location', locationID);
 
-        const locationMenu = await fetchLocationMenu(locationID);
+        const locationMenu = await fetchLocation(locationID);
         setMenuItems(locationMenu.menu);
+
+        fetchCart(locationID).then(setCart);
     };
 
     const fetchLocations = async (): Promise<Location[]> => {
-        return fetch(`${SERVER_URL}/locations`)
-            .then(res => res.json())
-            .then(({ data }) => data);
+        return fetch(`${SERVER_URL}/location`)
+            .then(res => res.json());
     };
 
-    const fetchLocationMenu = async (locationID: string): Promise<Location & { menu: MenuItem[] }> => {
-        return fetch(`${SERVER_URL}/locations/${locationID}/menu`)
+    const fetchLocation = async (locationID: string): Promise<Location & { menu: MenuItem[] }> => {
+        return fetch(`${SERVER_URL}/location/${locationID}`)
             .then(res => res.json())
-            .then(({ data }) => data);
+            .then(cart => cart ? cart : { location: { id: '', name: '' }, menuItems: [], subtotal: 0 });
     };
 
-    const fetchCart = async (): Promise<Cart> => {
-        return fetch(`${SERVER_URL}/cart`, { credentials: 'include' })
-            .then(res => res.json())
-            .then(({ data }) => data);
+    const fetchCart = async (locationID: string): Promise<Cart> => {
+        const res = await fetch(`${SERVER_URL}/cart/${locationID}`, { credentials: 'include' });
+        if (res.status === 204) {
+            return fetchCreateCart(locationID);
+        }
+        return res.json();
     };
 
-    const fetchAddToCart = async (itemID: string): Promise<Cart> => {
-        return fetch(`${SERVER_URL}/cart/${itemID}`, { method: 'POST', credentials: 'include' })
-            .then(res => res.json())
-            .then(({ data }) => data);
+    const fetchCreateCart = async (locationID: string): Promise<Cart> => {
+        const options: RequestInit = {
+            method: 'POST',
+            credentials: 'include',
+        };
+        return fetch(`${SERVER_URL}/cart/${locationID}`, options)
+            .then(res => res.json());
+    };
+
+    const fetchUpdateCart = async (locationID: string, menuItems: MenuItem[]): Promise<Cart> => {
+        const options: RequestInit = {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+              },
+            body: JSON.stringify({ menuItems: menuItems.map(i => ({ id: i.id })) }),
+        };
+        return fetch(`${SERVER_URL}/cart/${locationID}`, options)
+            .then(res => res.json());
     };
 
     useEffect(() => {
@@ -70,10 +90,12 @@ export default function App() {
 
         if (locationID) {
             setLocation(locationID);
-            fetchLocationMenu(locationID).then(data => setMenuItems(data.menu));
-            fetchCart().then(setCart);
+            fetchLocation(locationID).then(data => setMenuItems(data.menu));
+            fetchCart(locationID).then(setCart);
         }
     }, []);
+
+    const cartLength = cart!.menuItems.length || 0;
 
     return (
         <>
@@ -82,9 +104,13 @@ export default function App() {
             </header>
             <main className="card">
                 <div className="cart">
-                    <Link to={'checkout'}>
-                        Cart ({cart.menuItems.length} {cart.menuItems.length === 0 || cart.menuItems.length > 1 ? 'items' : 'item'})
-                    </Link>
+                    {
+                        cart.menuItems.length > 0 &&
+                            <Link to={'checkout'}>
+                                Cart ({cartLength} {cartLength === 0 || cartLength > 1 ? 'items' : 'item'})
+                            </Link>
+                    }
+
                 </div>
                 <div className="location-dropdown">
                     <label htmlFor="location">Ordering from</label>

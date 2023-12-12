@@ -21,13 +21,13 @@ export const location: Plugin<void> = {
         server.route([
             {
                 method: 'GET',
-                path: '/locations',
+                path: '/location',
                 handler: getLocationsHandler
             },
             {
                 method: 'GET',
-                path: '/locations/{id}/menu',
-                handler: getLocationMenuHandler
+                path: '/location/{id}',
+                handler: getLocationHandler
             }
         ]);
     }
@@ -35,20 +35,16 @@ export const location: Plugin<void> = {
 
 async function getLocationsHandler(_: Request, h: ResponseToolkit) {
     return h
-        .response({ data: locationsDb.map(l => ({ id: l.id, name: l.name })) })
+        .response(locationsDb.map(l => ({ id: l.id, name: l.name })))
         .code(200);
 }
 
-async function getLocationMenuHandler(request: Request, h: ResponseToolkit) {
+async function getLocationHandler(request: Request, h: ResponseToolkit) {
     const location = locationsDb.find(l => l.id === request.params.id);
 
     if (!location) {
-        return h
-            .response({ message: 'Error getting location menu: Unrecognized location' })
-            .code(422);
+        return h.response().code(204);
     }
 
-    return h
-        .response({ data: location })
-        .code(200);
+    return h.response(location).code(200);
 }

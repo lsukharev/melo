@@ -11,25 +11,25 @@ afterAll((done) => {
     server.events.on('stop', () => {
         done();
     });
-    server.stop();
+    server.stop().then(() => done());
 });
 
 describe('routes/location', () => {
     test('should successfully get all locations', async function () {
-        const data = await server.inject('/locations');
+        const data = await server.inject('/location');
         expect(data.statusCode).toBe(200);
-        expect(data.result).toEqual({ data: locations.map(l => ({ id: l.id, name: l.name })) });
+        expect(data.result).toEqual(locations.map(l => ({ id: l.id, name: l.name })));
     });
 
-    test('should successfully get menu of a valid location', async function () {
-        const data = await server.inject('/locations/1/menu');
+    test('should successfully get details of a valid location', async function () {
+        const data = await server.inject('/location/1');
         expect(data.statusCode).toBe(200);
-        expect(data.result).toEqual({ data: locations.find(l => l.id === '1') });
+        expect(data.result).toEqual(locations.find(l => l.id === '1'));
     });
 
-    test('should fail getting menu of an invalid location', async function () {
-        const data = await server.inject('/locations/999999999999999/menu');
-        expect(data.statusCode).toBe(422);
-        expect(data.result).toEqual({ message: 'Error getting location menu: Unrecognized location' });
+    test('should successfully get empty result for an invalid location', async function () {
+        const data = await server.inject('/location/999999999999999');
+        expect(data.statusCode).toBe(204);
+        expect(data.result).toBeNull();
     });
 });
