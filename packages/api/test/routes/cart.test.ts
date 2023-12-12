@@ -52,7 +52,7 @@ afterAll((done) => {
     server.events.on('stop', () => {
         done();
     });
-    server.stop();
+    server.stop().then(() => done());
 });
 
 describe('routes/cart', () => {

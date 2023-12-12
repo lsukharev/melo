@@ -28,5 +28,5 @@
 
 2. Running the tests
     ```sh
-    pnpm run start
+    pnpm run test
     ```

@@ -4,7 +4,8 @@
   "description": "A simple e-commerce application",
   "private": true,
   "scripts": {
-    "start": "concurrently \"pnpm run --filter @melo/api start\" \"pnpm run --filter @melo/web dev\""
+    "start": "concurrently \"pnpm run --filter @melo/api start\" \"pnpm run --filter @melo/web dev\"",
+    "test": "pnpm run --filter @melo/api test"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",
