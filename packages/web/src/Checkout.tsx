@@ -37,6 +37,8 @@ export default function Checkout() {
 
         if (locationID) {
             fetchCart(locationID).then(setCart);
+        } else {
+            navigate('/');
         }
     }, []);
 
